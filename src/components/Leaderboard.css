@@ -1,0 +1,706 @@
+@font-face {
+  font-family: 'Neue Montreal';
+  src: url('../fonts/Neue_Montreal/PPNeueMontreal-Book.otf') format('opentype');
+  font-weight: 300;
+  font-style: normal;
+}
+
+body {
+  /* Gradient based on #068987 (teal) */
+  background: linear-gradient(180deg, 
+    #034443 0%,    /* Darker teal */
+    #068987 50%,   /* Base teal */
+    #07b3b0 75%,   /* Lighter teal */
+    #0ad3d0 100%   /* Brightest teal */
+  );
+  min-height: 100vh;
+  padding: 20px;
+}
+
+.leaderboard {
+  max-width: 1000px;
+  width: 90%;
+  margin: 0 auto;
+  padding: 30px;
+  background: rgba(6, 137, 135, 0.1);
+  backdrop-filter: blur(5px);
+  border-radius: 15px;
+  position: relative;
+  border: 3px solid #07b3b0;
+  box-shadow: 
+    0 0 30px rgba(6, 137, 135, 0.3),
+    inset 0 0 50px rgba(6, 137, 135, 0.1);
+  overflow: visible;
+  min-height: fit-content;
+  height: auto;
+}
+
+  /* Adjust header sizes */
+  h2 {
+    font-size: 1.5em;
+    margin: 15px 0;
+    color: white
+  }
+  
+/* Star decoration */
+.leaderboard::before {
+  content: '★';
+  position: absolute;
+  font-size: 40px;
+  color: #0ad3d0;
+  text-shadow: 0 0 10px rgba(6, 137, 135, 0.8);
+  top: -20px;
+  left: 20px;
+  background-image: var(--dumnbell_jellyfish-image);
+}
+
+.leaderboard::after {
+  content: '★';
+  position: absolute;
+  font-size: 40px;
+  color: #0ad3d0;
+  text-shadow: 0 0 10px rgba(6, 137, 135, 0.8);
+  top: -20px;
+  right: 20px;
+}
+
+
+
+.title-text {
+  font-family: 'Impact', 'Arial Black', sans-serif;
+  font-size: 4.5em;
+  font-weight: bold;
+  text-transform: uppercase;
+  line-height: 0.8;
+  letter-spacing: 2px;
+  color: #fff;
+  text-shadow: 
+    3px 3px 0 #034443,  /* Darker teal */
+    -3px -3px 0 #07b3b0; /* Lighter teal */
+  position: relative;
+  z-index: 2;
+}
+
+.title-text.accent {
+  font-size: 5.5em;
+  background: linear-gradient(
+    180deg,
+    #fff6c9 0%,    /* Bright highlight */
+    #ffd700 15%,   /* Pure gold */
+    #ffc125 25%,   /* Rich gold */
+    #ffd700 35%,   /* Pure gold */
+    #ca9b00 50%,   /* Deep gold */
+    #ffd700 65%,   /* Pure gold */
+    #ffc125 75%,   /* Rich gold */
+    #ffd700 85%,   /* Pure gold */
+    #fff6c9 100%   /* Bright highlight */
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-shadow: 
+    2px 2px 4px rgba(0, 0, 0, 0.4),
+    -2px -2px 4px rgba(255, 255, 255, 0.4),
+    0 0 20px rgba(255, 215, 0, 0.6);
+  position: relative;
+  transform: scale(1.1);
+  filter: brightness(1.2) contrast(1.2);
+}
+
+/* Add metallic shine animation */
+@keyframes metallicShine {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.title-text.accent {
+  background-size: 200% 200%;
+  animation: metallicShine 4s ease infinite;
+}
+
+/* Add a subtle outline to make it pop more */
+.title-text.accent::before {
+  content: attr(data-text);
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: -1;
+  background: linear-gradient(
+    45deg,
+    #ca9b00,
+    #ffd700
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  filter: blur(4px);
+  opacity: 0.7;
+}
+
+table {
+  width: 100%;
+  max-width: 100%;
+  margin: 20px auto;
+  border-collapse: separate;
+  border-spacing: 0;
+  table-layout: fixed;
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 4px 15px rgba(6, 137, 135, 0.2);
+  border: 2px solid #068987;
+}
+
+th {
+  background: #068987;
+  color: #fff;
+  padding: 15px;
+  text-transform: uppercase;
+  font-weight: bold;
+  letter-spacing: 1px;
+  text-shadow: 1px 1px 2px rgba(3, 68, 67, 0.5);
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+td, .reporter-cell {
+  padding: 12px 15px;
+  border-bottom: 1px solid rgba(6, 137, 135, 0.2);
+  color: #034443;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  font-family: 'Neue Montreal', Arial, sans-serif;
+  font-size: 1em;
+}
+
+tr:hover {
+  background: rgba(6, 137, 135, 0.1);
+}
+
+.update-log {
+  margin-top: 0;
+  padding: 0px;
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 8px;
+  border: 2px solid #068987;
+  position: relative;
+}
+
+.update-log h3 {
+  color: #068987;
+  text-shadow: 1px 1px 0 rgba(255, 255, 255, 0.5);
+  margin-bottom: 20px;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
+
+.error-message {
+  color: #d35252;
+  text-align: center;
+  padding: 20px;
+  font-weight: bold;
+  text-transform: uppercase;
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 8px;
+  border: 2px solid #d35252;
+}
+
+.loading {
+  color: #068987;
+  text-align: center;
+  padding: 20px;
+  font-weight: bold;
+  text-transform: uppercase;
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 8px;
+  border: 2px solid #068987;
+}
+
+/* Add some stars in the background */
+@keyframes twinkle {
+  0% { opacity: 0.3; }
+  50% { opacity: 1; }
+  100% { opacity: 0.3; }
+}
+
+.leaderboard::before,
+.leaderboard::after {
+  animation: twinkle 2s infinite ease-in-out;
+}
+
+/* Additional bounce patterns */
+@keyframes bounce2 {
+  0% { top: 100vh; left: 0; }
+  25% { top: 50vh; left: 25vw; }
+  50% { top: 0; left: 50vw; }
+  75% { top: 50vh; left: 75vw; }
+  100% { top: 100vh; left: 0; }
+}
+
+@keyframes bounce3 {
+  0% { top: 50vh; left: 100vw; }
+  25% { top: 100vh; left: 75vw; }
+  50% { top: 50vh; left: 50vw; }
+  75% { top: 0; left: 25vw; }
+  100% { top: 50vh; left: 100vw; }
+}
+
+@keyframes bounce4 {
+  0% { top: 0; left: 50vw; }
+  25% { top: 25vh; left: 100vw; }
+  50% { top: 75vh; left: 50vw; }
+  75% { top: 25vh; left: 0; }
+  100% { top: 0; left: 50vw; }
+}
+
+/* Add back the original bounce animation */
+@keyframes bounce {
+  0% {
+    top: 0;
+    left: 0;
+  }
+  25% {
+    top: calc(100vh - 500px);
+    left: calc(25vw - 200px);
+  }
+  50% {
+    top: 50vh;
+    left: calc(50vw - 200px);
+  }
+  75% {
+    top: 0;
+    left: calc(75vw - 200px);
+  }
+  100% {
+    top: 0;
+    left: 0;
+  }
+}
+
+/* Base styles for all jellyfish */
+.side-image-left, .side-image-right, .side-image-2, .side-image-3, .side-image-4 {
+  position: fixed;
+  height: 500px;
+  width: 400px;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  opacity: 0.3;
+  pointer-events: none;
+  z-index: -1;
+}
+
+/* Individual animation assignments */
+.side-image-2 {
+  animation: bounce2 25s linear infinite;
+  transform: scaleX(-1) rotate(45deg);
+}
+
+.side-image-3 {
+  animation: bounce3 22s linear infinite;
+  transform: rotate(-45deg);
+}
+
+.side-image-4 {
+  animation: bounce4 28s linear infinite;
+  transform: scaleX(-1) rotate(15deg);
+}
+
+/* Keep existing animations for original jellyfish */
+.side-image-left {
+  transform: scaleX(-1);
+  animation: bounce 20s linear infinite;
+  animation-delay: -10s;
+}
+
+.side-image-right {
+  animation: bounce 20s linear infinite;
+}
+
+/* Update media queries for responsive layout */
+@media (max-width: 1600px) {
+  .leaderboard {
+    width: 60%;
+  }
+  
+  .side-image-left {
+    left: calc((100vw - 80vw) / 2 - 250px);
+  }
+  
+  .side-image-right {
+    right: calc((100vw - 80vw) / 2 - 250px);
+  }
+}
+
+@media (max-width: 1200px) {
+  .leaderboard {
+    width: 60%;
+  }
+  
+  table {
+    font-size: 0.9em;
+  }
+}
+
+
+
+
+/* Update media queries for larger screens */
+@media (max-width: 1800px) {
+  .side-image-left,
+  .side-image-right {
+    width: 350px;
+  }
+  
+  .side-image-left {
+    left: calc((100vw - 75vw) / 2 - 300px);
+  }
+  
+  .side-image-right {
+    right: calc((100vw - 75vw) / 2 - 300px);
+  }
+}
+
+@media (max-width: 1600px) {
+  .side-image-left,
+  .side-image-right {
+    width: 300px;
+  }
+  
+  .side-image-left {
+    left: calc((100vw - 80vw) / 2 - 250px);
+  }
+  
+  .side-image-right {
+    right: calc((100vw - 80vw) / 2 - 250px);
+  }
+}
+
+.update-entry {
+  padding: 15px;
+  margin-bottom: 15px;
+  border-radius: 4px;
+  background: rgba(6, 137, 135, 0.05);
+}
+
+.update-entry p {
+  margin: 5px 0;
+}
+
+.update-entry ul {
+  margin: 5px 0;
+  padding-left: 20px;
+}
+
+.update-entry hr {
+  border: none;
+  border-top: 1px solid rgba(6, 137, 135, 0.2);
+  margin: 10px 0;
+}
+
+/* Base table styles */
+.update-log-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+  background: rgba(255, 255, 255, 0.9);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.update-log-table th,
+.update-log-table td {
+  padding: 12px;
+  text-align: left;
+  border-bottom: 1px solid rgba(6, 137, 135, 0.2);
+}
+
+.update-log-table th {
+  background-color: rgba(6, 137, 135, 0.1);
+  font-weight: bold;
+  color: #034443;
+}
+
+.update-log-table tr:hover {
+  background-color: rgba(6, 137, 135, 0.05);
+}
+
+.update-log-table .reporter-cell {
+  font-family: monospace;
+  font-size: 0.9em;
+  word-break: break-all;
+}
+
+
+
+/* Small mobile devices */
+@media screen and (max-width: 375px) {
+  .update-log-table {
+    font-size: 12px; /* Even smaller font for very small devices */
+  }
+  .wwf-title {
+    text-align: center;
+    width: 50px;       /* Reduced from 200px */
+    height: 150px;      /* Reduced from 200px */
+    margin: -20px auto 40px;
+    position: relative;
+    background-size: 100%;
+    background-position: center;
+    background-repeat: no-repeat;
+    padding: 40px 0px 0 40px; /* Adjust padding to accommodate the image */
+    z-index: 1;
+  }
+
+  .update-log-table th,
+  .update-log-table td {
+    padding: 6px;
+  }
+
+  .title-text {
+    font-size: 2.5em;  /* Smaller base font size for mobile */
+  }
+  
+  .title-text.accent {
+    font-size: 3em;    /* Smaller accent font size for mobile */
+  }
+}
+
+/* Base title styles */
+.wwf-title {
+  text-align: center;
+  margin: 0 auto;
+  position: relative;
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
+  width: 300px;
+  height: 160px;
+  z-index: 1;
+  margin-bottom: 40px;  /* Add space between title and leaderboard */
+}
+
+.tellor-logo {
+  width: 40px;  /* Adjust size as needed */
+  height: auto;
+  display: block;
+  margin: 20px auto 0;  /* Add space above logo */
+}
+
+/* Small mobile devices */
+@media screen and (max-width: 375px) {
+  
+  .leaderboard .wwf-title {
+    width: 250px !important;
+    height: 200px !important;
+    margin: -50px auto -80px;
+    padding-top: 70px;
+    padding-left: 0;  /* Remove any left padding */
+    text-align: center;  /* Ensure text is centered */
+  }
+  .leaderboard {
+    width: 95%;
+    padding: 15px;
+    margin: 0;
+    margin-left: -10px;  /* Slightly smaller shift for smaller screens */
+  }
+}
+
+.leaderboard-heading {
+  text-align: center;
+  color: #fff;
+  font-family: 'Impact', 'Arial Black', sans-serif;
+  font-size: 2em;
+  text-transform: uppercase;
+  margin: 0 0 15px 0;  /* Added bottom margin */
+  padding: 0;
+  height: 0px;
+  text-shadow: 
+    2px 2px 0 #034443,
+    -2px -2px 0 #07b3b0;
+}
+
+
+/* If you want to add any specific styles just for the reporter cell: */
+.reporter-cell {
+  src: url('../fonts/Neue_Montreal/PPNeueMontreal-Book.otf') format('opentype');
+}
+
+/* Target specifically the reporter cell */
+td.reporter-cell {
+  font-family: 'Neue Montreal', Arial, sans-serif !important;
+  src: url('../fonts/Neue_Montreal/PPNeueMontreal-Book.otf') format('opentype');
+}
+
+/* Add/update media queries for table responsiveness */
+@media screen and (max-width: 768px) {
+  th {
+    padding: 10px;
+    font-size: 0.9em;
+    letter-spacing: 0.5px;
+  }
+}
+
+@media screen and (max-width: 375px) {
+  th {
+    padding: 8px;
+    font-size: 0.8em;
+    letter-spacing: 0;
+  }
+  
+  table {
+    font-size: 0.8em;  /* Reduce overall table font size */
+  }
+}
+
+.challenge-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;  /* Space between logo and text */
+}
+
+.tellor-logo {
+  width: 40px;  /* Adjust size as needed */
+  height: auto;
+}
+
+.leaderboard-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: fit-content;
+  margin: 0 auto;  /* Remove any vertical margin */
+  padding: 0;  /* Remove any padding */
+  line-height: 1;  /* Reduce line height */
+}
+
+.leaderboard-heading {
+  font-size: 2.5em;
+  color: white;
+  line-height: 1;  /* Reduce line height */
+}
+
+.tellor-logo {
+  width: 50px;  /* Slightly reduced size */
+  height: auto;
+  flex-shrink: 0;
+  display: block;
+  padding: 0;
+  line-height: 0;  /* Remove any line height spacing */
+}
+
+/* Add new bounce patterns for additional jellyfish */
+@keyframes bounce5 {
+  0% { top: 25vh; left: 0; }
+  25% { top: 75vh; left: 25vw; }
+  50% { top: 25vh; left: 50vw; }
+  75% { top: 75vh; left: 75vw; }
+  100% { top: 25vh; left: 0; }
+}
+
+@keyframes bounce6 {
+  0% { top: 75vh; left: 100vw; }
+  25% { top: 25vh; left: 75vw; }
+  50% { top: 75vh; left: 50vw; }
+  75% { top: 25vh; left: 25vw; }
+  100% { top: 75vh; left: 100vw; }
+}
+
+/* Add new jellyfish classes */
+.side-image-5, .side-image-6 {
+  position: fixed;
+  height: 500px;
+  width: 400px;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  opacity: 0.3;
+  pointer-events: none;
+  z-index: -1;
+}
+
+.side-image-5 {
+  animation: bounce5 30s linear infinite;
+  transform: rotate(30deg);
+}
+
+.side-image-6 {
+  animation: bounce6 27s linear infinite;
+  transform: scaleX(-1) rotate(-20deg);
+}
+
+/* Hide additional jellyfish on mobile */
+@media screen and (max-width: 768px) {
+  .side-image-2, .side-image-3, .side-image-4, .side-image-5, .side-image-6 {
+    display: none;
+  }
+}
+
+/* Add more bounce patterns */
+@keyframes bounce7 {
+  0% { top: 30vh; left: 20vw; }
+  25% { top: 80vh; left: 40vw; }
+  50% { top: 20vh; left: 60vw; }
+  75% { top: 70vh; left: 80vw; }
+  100% { top: 30vh; left: 20vw; }
+}
+
+@keyframes bounce8 {
+  0% { top: 60vh; left: 90vw; }
+  25% { top: 20vh; left: 60vw; }
+  50% { top: 80vh; left: 30vw; }
+  75% { top: 40vh; left: 10vw; }
+  100% { top: 60vh; left: 90vw; }
+}
+
+@keyframes bounce9 {
+  0% { top: 10vh; left: 40vw; }
+  25% { top: 90vh; left: 70vw; }
+  50% { top: 30vh; left: 20vw; }
+  75% { top: 60vh; left: 50vw; }
+  100% { top: 10vh; left: 40vw; }
+}
+
+/* Add new jellyfish classes */
+.side-image-7, .side-image-8, .side-image-9 {
+  position: fixed;
+  height: 500px;
+  width: 400px;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  opacity: 0.3;
+  pointer-events: none;
+  z-index: -1;
+}
+
+.side-image-7 {
+  animation: bounce7 32s linear infinite;
+  transform: rotate(15deg);
+}
+
+.side-image-8 {
+  animation: bounce8 29s linear infinite;
+  transform: scaleX(-1) rotate(-25deg);
+}
+
+.side-image-9 {
+  animation: bounce9 34s linear infinite;
+  transform: rotate(40deg);
+}
+
+/* Update media query to include new jellyfish */
+@media screen and (max-width: 768px) {
+  .side-image-2, .side-image-3, .side-image-4, .side-image-5, .side-image-6, 
+  .side-image-7, .side-image-8, .side-image-9 {
+    display: none;
+  }
+}
+
