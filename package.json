@@ -11,13 +11,13 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-scripts": "5.0.1",
-    "serve": "^14.2.4",
+    "serve": "^14.2.1",
     "typescript": "4.9.5"
   },
   "scripts": {
-    "start": "serve -s build -l $PORT",
+    "start": "serve -s build -l ${PORT:-3000}",
     "build": "react-scripts build",
-    "heroku-postbuild": "npm run build"
+    "heroku-postbuild": "npm install --legacy-peer-deps && npm run build"
   },
   "eslintConfig": {
     "extends": [
