@@ -1,1 +1,1 @@
-web: serve -s build -l 
+web: serve -s build --listen $PORT
