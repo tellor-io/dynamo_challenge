@@ -15,7 +15,7 @@
     "typescript": "4.9.5"
   },
   "scripts": {
-    "start": "serve -s build -l ${PORT:-3000}",
+    "start": "serve -s build --listen ${PORT:-3000}",
     "build": "react-scripts build",
     "heroku-postbuild": "npm install --legacy-peer-deps && npm run build"
   },
