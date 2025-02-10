@@ -704,3 +704,77 @@ td.reporter-cell {
   }
 }
 
+/* Add these styles at the end of your CSS file */
+
+.dataset-filter {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin: 20px 0;
+}
+
+.filter-btn {
+  padding: 8px 16px;
+  border: 2px solid #068987;
+  background: rgba(6, 137, 135, 0.1);
+  color: #fff;
+  border-radius: 20px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: all 0.3s ease;
+}
+
+.filter-btn:hover {
+  background: rgba(6, 137, 135, 0.3);
+}
+
+.filter-btn.active {
+  background: #068987;
+  color: white;
+  box-shadow: 0 0 10px rgba(6, 137, 135, 0.5);
+}
+
+@media screen and (max-width: 375px) {
+  .dataset-filter {
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .filter-btn {
+    width: 100%;
+    max-width: 200px;
+  }
+}
+
+/* Add these styles for the copyable address */
+.reporter-cell.copyable {
+  cursor: pointer;
+  position: relative;
+  transition: all 0.2s ease;
+}
+
+.reporter-cell.copyable:hover {
+  background: rgba(6, 137, 135, 0.1);
+}
+
+.reporter-cell.copyable:hover::after {
+  content: "Copy Full Address";
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0, 0, 0, 0.8);
+  color: white;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+/* Optional: Add animation for click feedback */
+.reporter-cell.copyable:active {
+  transform: scale(0.98);
+  opacity: 0.8;
+}
+

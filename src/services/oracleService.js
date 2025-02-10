@@ -1,4 +1,4 @@
-const BASE_URL = 'https://tellorlayer.com';
+const BASE_URL = 'https://layer-node.com';
 
 // Helper function to decode hex string to number
 const hexToNumber = (hex) => {
@@ -28,6 +28,7 @@ export const fetchOracleData = async (oracleQueryId, bridgeTimestamp) => {
       readableTime: new Date(currentTimestamp).toISOString()
     });
     
+    // Try to fetch real data first
     const results = [];
     let timestamp = currentTimestamp;
     
@@ -81,6 +82,12 @@ export const fetchOracleData = async (oracleQueryId, bridgeTimestamp) => {
         console.log('No more data available after fetching', results.length, 'entries');
         break;
       }
+    }
+
+    // If no results were found, return empty array
+    if (results.length === 0) {
+      console.log('No real data found, returning empty array');
+      return [];
     }
 
     if (results.length >= MAX_SAFE_ENTRIES) {
