@@ -6,13 +6,20 @@ import App from './App';
 // Global error handler
 if (typeof window !== 'undefined') {
   window.onerror = function(message, source, lineno, colno, error) {
-    console.log('Caught global error:', { message, source });
-    return true; // Prevents the error from being shown in console
+    console.log('Global error:', {
+      message,
+      source,
+      lineno,
+      colno
+    });
+    return false; // Let other handlers run
   };
 
   window.addEventListener('unhandledrejection', function(event) {
-    console.log('Caught unhandled rejection:', event.reason);
-    event.preventDefault();
+    console.log('Unhandled rejection:', {
+      reason: event.reason?.toString()
+    });
+    return false;
   });
 }
 

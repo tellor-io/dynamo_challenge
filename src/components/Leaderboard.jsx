@@ -6,6 +6,7 @@ const Leaderboard = ({ oracleQueryId, bridgeTimestamp }) => {
   const [leaderboardData, setLeaderboardData] = useState([]);
   const [updateLog, setUpdateLog] = useState([]);
   const [error, setError] = useState(null);
+  const [datasetFilter, setDatasetFilter] = useState('all'); // 'all', 'mens', or 'womens'
 
   useEffect(() => {
     const fetchData = async () => {
@@ -75,7 +76,83 @@ const Leaderboard = ({ oracleQueryId, bridgeTimestamp }) => {
     return `${address.slice(0, 8)}...${address.slice(-8)}`;
   };
 
+  const filterDataByDataset = (data) => {
+    switch(datasetFilter) {
+      case 'mens':
+        return data.filter(entry => entry.dataSet === true);
+      case 'womens':
+        return data.filter(entry => entry.dataSet === false);
+      default:
+        return data;
+    }
+  };
+
+  const renderDatasetFilter = () => (
+    <div className="dataset-filter">
+      <button 
+        className={`filter-btn ${datasetFilter === 'all' ? 'active' : ''}`}
+        onClick={() => setDatasetFilter('all')}
+      >
+        All
+      </button>
+      <button 
+        className={`filter-btn ${datasetFilter === 'mens' ? 'active' : ''}`}
+        onClick={() => setDatasetFilter('mens')}
+      >
+        Men's
+      </button>
+      <button 
+        className={`filter-btn ${datasetFilter === 'womens' ? 'active' : ''}`}
+        onClick={() => setDatasetFilter('womens')}
+      >
+        Women's
+      </button>
+    </div>
+  );
+
+  // Add new function to handle copy
+  const copyToClipboard = (text) => {
+    // Check if navigator.clipboard is available
+    if (navigator.clipboard && window.isSecureContext) {
+      navigator.clipboard.writeText(text).then(() => {
+        console.log('Address copied to clipboard');
+      }).catch(err => {
+        console.error('Failed to copy address:', err);
+        fallbackCopyToClipboard(text);
+      });
+    } else {
+      // Fallback for browsers that don't support clipboard API
+      fallbackCopyToClipboard(text);
+    }
+  };
+
+  const fallbackCopyToClipboard = (text) => {
+    try {
+      // Create temporary input element
+      const textArea = document.createElement('textarea');
+      textArea.value = text;
+      
+      // Make it invisible but part of the document
+      textArea.style.position = 'fixed';
+      textArea.style.left = '-999999px';
+      textArea.style.top = '-999999px';
+      document.body.appendChild(textArea);
+      
+      // Select and copy
+      textArea.focus();
+      textArea.select();
+      document.execCommand('copy');
+      
+      // Clean up
+      textArea.remove();
+      console.log('Address copied using fallback method');
+    } catch (err) {
+      console.error('Fallback copy failed:', err);
+    }
+  };
+
   const renderUpdateLog = (log) => {
+    const filteredLog = filterDataByDataset(log);
     return (
       <table className="update-log-table">
         <thead>
@@ -88,7 +165,7 @@ const Leaderboard = ({ oracleQueryId, bridgeTimestamp }) => {
           </tr>
         </thead>
         <tbody>
-          {log.map((entry, index) => (
+          {filteredLog.map((entry, index) => (
             <tr key={index}>
               <td>{entry.dataSet ? "Men's" : "Women's"}</td>
               <td>
@@ -99,7 +176,13 @@ const Leaderboard = ({ oracleQueryId, bridgeTimestamp }) => {
                 {entry.XHandle || 'N/A'} / {entry.githubUsername || 'N/A'}
               </td>
               <td>{entry.hoursOfSleep || 'N/A'} hrs</td>
-              <td className="reporter-cell">{truncateAddress(entry.reporter)}</td>
+              <td 
+                className="reporter-cell copyable"
+                onClick={() => copyToClipboard(entry.reporter)}
+                title="Click to copy full address"
+              >
+                {truncateAddress(entry.reporter)}
+              </td>
             </tr>
           ))}
         </tbody>
@@ -156,6 +239,7 @@ const Leaderboard = ({ oracleQueryId, bridgeTimestamp }) => {
             />
             <h2 className="leaderboard-heading">Leaderboard</h2>
           </div>
+          {renderDatasetFilter()}
           {updateLog.length > 0 ? renderUpdateLog(updateLog) : <p>No updates yet</p>}
         </div>
       </div>
