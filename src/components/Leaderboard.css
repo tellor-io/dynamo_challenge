@@ -22,7 +22,7 @@ body {
   width: 90%;
   margin: 0 auto;
   padding: 30px;
-  background: rgba(6, 137, 135, 0.1);
+  background: rgba(6, 137, 135, 0.1); /* Semi-transparent teal background */
   backdrop-filter: blur(5px);
   border-radius: 15px;
   position: relative;
@@ -168,6 +168,7 @@ th {
   text-shadow: 1px 1px 2px rgba(3, 68, 67, 0.5);
   word-wrap: break-word;
   overflow-wrap: break-word;
+  transition: background-color 0.2s ease;
 }
 
 td, .reporter-cell {
@@ -185,12 +186,33 @@ tr:hover {
 }
 
 .update-log {
-  margin-top: 0;
-  padding: 0px;
   background: rgba(255, 255, 255, 0.9);
   border-radius: 8px;
+  padding: 20px;
+  margin-top: 20px;
+  box-shadow: 
+    0 4px 15px rgba(6, 137, 135, 0.2),
+    inset 0 0 30px rgba(6, 137, 135, 0.1);
   border: 2px solid #068987;
-  position: relative;
+}
+
+/* Customize scrollbar for webkit browsers */
+.update-log::-webkit-scrollbar {
+  width: 8px;
+}
+
+.update-log::-webkit-scrollbar-track {
+  background: rgba(6, 137, 135, 0.1);
+  border-radius: 4px;
+}
+
+.update-log::-webkit-scrollbar-thumb {
+  background: #068987;
+  border-radius: 4px;
+}
+
+.update-log::-webkit-scrollbar-thumb:hover {
+  background: #07b3b0;
 }
 
 .update-log h3 {
@@ -284,10 +306,10 @@ tr:hover {
   }
 }
 
-/* Base styles for all jellyfish */
-.side-image-left, .side-image-right, .side-image-2, .side-image-3, .side-image-4 {
+/* Update the base styles for all jellyfish images */
+.side-image-left, .side-image-2, .side-image-3, .side-image-4 {
   position: fixed;
-  height: 500px;
+  height: 400px;
   width: 400px;
   background-size: contain;
   background-repeat: no-repeat;
@@ -295,9 +317,12 @@ tr:hover {
   opacity: 0.3;
   pointer-events: none;
   z-index: -1;
+  border-radius: 50%;
+  background-color: rgba(6, 137, 135, 0.1);
+  backdrop-filter: blur(2px);
 }
 
-/* Individual animation assignments */
+/* Keep existing animation assignments */
 .side-image-2 {
   animation: bounce2 25s linear infinite;
   transform: scaleX(-1) rotate(45deg);
@@ -308,12 +333,13 @@ tr:hover {
   transform: rotate(-45deg);
 }
 
+/* Add animation for the new jellyfish */
 .side-image-4 {
   animation: bounce4 28s linear infinite;
-  transform: scaleX(-1) rotate(15deg);
+  transform: rotate(90deg);
 }
 
-/* Keep existing animations for original jellyfish */
+/* Original jellyfish */
 .side-image-left {
   transform: scaleX(-1);
   animation: bounce 20s linear infinite;
@@ -409,9 +435,9 @@ tr:hover {
 .update-log-table {
   width: 100%;
   border-collapse: collapse;
-  margin-top: 20px;
-  background: rgba(255, 255, 255, 0.9);
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin: 10px 0;
+  border: none;
+  box-shadow: none;
 }
 
 .update-log-table th,
@@ -424,7 +450,7 @@ tr:hover {
 .update-log-table th {
   background-color: rgba(6, 137, 135, 0.1);
   font-weight: bold;
-  color: #034443;
+  color: #068987;
 }
 
 .update-log-table tr:hover {
@@ -512,17 +538,15 @@ tr:hover {
 }
 
 .leaderboard-heading {
-  text-align: center;
-  color: #fff;
+  color: #068987;
   font-family: 'Impact', 'Arial Black', sans-serif;
   font-size: 2em;
   text-transform: uppercase;
-  margin: 0 0 15px 0;  /* Added bottom margin */
+  margin: 0;
   padding: 0;
-  height: 0px;
   text-shadow: 
-    2px 2px 0 #034443,
-    -2px -2px 0 #07b3b0;
+    2px 2px 0 rgba(3, 68, 67, 0.3),
+    -2px -2px 0 rgba(7, 179, 176, 0.3);
 }
 
 
@@ -572,28 +596,29 @@ td.reporter-cell {
 
 .leaderboard-header {
   display: flex;
+  flex-direction: row;
   align-items: center;
   justify-content: center;
-  gap: 10px;
-  width: fit-content;
-  margin: 0 auto;  /* Remove any vertical margin */
-  padding: 0;  /* Remove any padding */
-  line-height: 1;  /* Reduce line height */
+  gap: 20px;
+  margin-bottom: 20px;
 }
 
 .leaderboard-heading {
-  font-size: 2.5em;
-  color: white;
-  line-height: 1;  /* Reduce line height */
+  color: #ffffff;
+  font-family: 'Impact', 'Arial Black', sans-serif;
+  font-size: 2em;
+  text-transform: uppercase;
+  margin: 0;
+  padding: 0;
+  text-shadow: 
+    2px 2px 0 #068987,
+    -2px -2px 0 #07b3b0;
 }
 
 .tellor-logo {
-  width: 50px;  /* Slightly reduced size */
+  width: 40px;
   height: auto;
-  flex-shrink: 0;
-  display: block;
-  padding: 0;
-  line-height: 0;  /* Remove any line height spacing */
+  margin: 0;
 }
 
 /* Add new bounce patterns for additional jellyfish */
@@ -722,16 +747,33 @@ td.reporter-cell {
   cursor: pointer;
   font-weight: bold;
   transition: all 0.3s ease;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
 }
 
 .filter-btn:hover {
-  background: rgba(6, 137, 135, 0.3);
+  background: rgba(6, 137, 135, 0.4);
+  box-shadow: 0 0 15px rgba(6, 137, 135, 0.3);
 }
 
 .filter-btn.active {
-  background: #068987;
+  background: #07b3b0; /* Brighter teal */
   color: white;
-  box-shadow: 0 0 10px rgba(6, 137, 135, 0.5);
+  box-shadow: 
+    0 0 15px rgba(6, 137, 135, 0.5),
+    inset 0 0 10px rgba(255, 255, 255, 0.2);
+  border-color: #0ad3d0; /* Brightest teal for border */
+  transform: scale(1.05);
+}
+
+/* Add a subtle pulse animation for active buttons */
+@keyframes activePulse {
+  0% { box-shadow: 0 0 15px rgba(6, 137, 135, 0.5), inset 0 0 10px rgba(255, 255, 255, 0.2); }
+  50% { box-shadow: 0 0 20px rgba(6, 137, 135, 0.7), inset 0 0 15px rgba(255, 255, 255, 0.3); }
+  100% { box-shadow: 0 0 15px rgba(6, 137, 135, 0.5), inset 0 0 10px rgba(255, 255, 255, 0.2); }
+}
+
+.filter-btn.active {
+  animation: activePulse 2s infinite;
 }
 
 @media screen and (max-width: 375px) {
@@ -776,5 +818,36 @@ td.reporter-cell {
 .reporter-cell.copyable:active {
   transform: scale(0.98);
   opacity: 0.8;
+}
+
+/* Add these styles for sortable columns */
+.sortable {
+  cursor: pointer;
+  position: relative;
+  padding-right: 25px !important;
+}
+
+.sortable::after {
+  content: '⇅';
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  opacity: 0.5;
+  font-size: 0.8em;
+}
+
+.sortable.asc::after {
+  content: '↑';
+  opacity: 1;
+}
+
+.sortable.desc::after {
+  content: '↓';
+  opacity: 1;
+}
+
+.sortable:hover {
+  background: rgba(6, 137, 135, 0.2);
 }
 
