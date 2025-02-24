@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+  import React, { useState, useEffect } from 'react';
 import { fetchOracleData } from '../services/oracleService';
 import './Leaderboard.css';
 
@@ -7,6 +7,10 @@ const Leaderboard = ({ oracleQueryId, bridgeTimestamp }) => {
   const [updateLog, setUpdateLog] = useState([]);
   const [error, setError] = useState(null);
   const [datasetFilter, setDatasetFilter] = useState('all'); // 'all', 'mens', or 'womens'
+  const [sortConfig, setSortConfig] = useState({
+    key: null,
+    direction: 'asc'
+  });
 
   useEffect(() => {
     const fetchData = async () => {
@@ -16,16 +20,16 @@ const Leaderboard = ({ oracleQueryId, bridgeTimestamp }) => {
         
         // Sort data by combined grip strength (descending order)
         const sortedData = data.sort((a, b) => {
-          const totalA = (a.rightHand || 0) + (a.leftHand || 0);  // Add null checks
-          const totalB = (b.rightHand || 0) + (b.leftHand || 0);  // Add null checks
-          return totalA - totalB;  // Changed from totalB - totalA to totalA - totalB
+          const totalA = (a.rightHand || 0) + (a.leftHand || 0);
+          const totalB = (b.rightHand || 0) + (b.leftHand || 0);
+          return totalA - totalB;
         });
         
         // Handle array of entries
         if (Array.isArray(sortedData)) {
           setLeaderboardData(sortedData);
           
-          // Update log with all unique entries
+          // Update log with all unique entries without limiting to 10
           setUpdateLog(prevLog => {
             const newLog = [...prevLog];
             
@@ -44,8 +48,8 @@ const Leaderboard = ({ oracleQueryId, bridgeTimestamp }) => {
               }
             });
             
-            // Keep only the last 10 entries
-            return newLog.slice(0, 10);
+            // Return all entries without slicing
+            return newLog;
           });
         }
         
@@ -151,40 +155,121 @@ const Leaderboard = ({ oracleQueryId, bridgeTimestamp }) => {
     }
   };
 
+  const sortData = (data, key) => {
+    const sortedData = [...data];
+    
+    sortedData.sort((a, b) => {
+      let aValue, bValue;
+      
+      switch(key) {
+        case 'dataset':
+          aValue = a.dataSet ? "Men's" : "Women's";
+          bValue = b.dataSet ? "Men's" : "Women's";
+          break;
+        case 'gripStrength':
+          aValue = (a.rightHand || 0) + (a.leftHand || 0);
+          bValue = (b.rightHand || 0) + (b.leftHand || 0);
+          break;
+        case 'social':
+          aValue = `${a.XHandle || ''}${a.githubUsername || ''}`.toLowerCase();
+          bValue = `${b.XHandle || ''}${b.githubUsername || ''}`.toLowerCase();
+          break;
+        case 'sleep':
+          aValue = a.hoursOfSleep || 0;
+          bValue = b.hoursOfSleep || 0;
+          break;
+        case 'reporter':
+          aValue = a.reporter || '';
+          bValue = b.reporter || '';
+          break;
+        default:
+          return 0;
+      }
+      
+      if (aValue < bValue) return sortConfig.direction === 'asc' ? -1 : 1;
+      if (aValue > bValue) return sortConfig.direction === 'asc' ? 1 : -1;
+      return 0;
+    });
+    
+    return sortedData;
+  };
+
+  const handleSort = (key) => {
+    setSortConfig(prevConfig => ({
+      key,
+      direction: prevConfig.key === key && prevConfig.direction === 'asc' ? 'desc' : 'asc'
+    }));
+  };
+
   const renderUpdateLog = (log) => {
     const filteredLog = filterDataByDataset(log);
+    const sortedLog = sortConfig.key ? sortData(filteredLog, sortConfig.key) : filteredLog;
+    
     return (
       <table className="update-log-table">
         <thead>
           <tr>
-            <th>Dataset</th>
-            <th>Grip Strength</th>
-            <th>Social (X/GitHub)</th>
-            <th>Sleep</th>
-            <th>Reporter</th>
+            <th 
+              onClick={() => handleSort('dataset')}
+              className={`sortable ${sortConfig.key === 'dataset' ? sortConfig.direction : ''}`}
+            >
+              Dataset
+            </th>
+            <th 
+              onClick={() => handleSort('gripStrength')}
+              className={`sortable ${sortConfig.key === 'gripStrength' ? sortConfig.direction : ''}`}
+            >
+              Grip Strength
+            </th>
+            <th 
+              onClick={() => handleSort('social')}
+              className={`sortable ${sortConfig.key === 'social' ? sortConfig.direction : ''}`}
+            >
+              Social (X/GitHub)
+            </th>
+            <th 
+              onClick={() => handleSort('sleep')}
+              className={`sortable ${sortConfig.key === 'sleep' ? sortConfig.direction : ''}`}
+            >
+              Sleep
+            </th>
+            <th 
+              onClick={() => handleSort('reporter')}
+              className={`sortable ${sortConfig.key === 'reporter' ? sortConfig.direction : ''}`}
+            >
+              Reporter
+            </th>
           </tr>
         </thead>
         <tbody>
-          {filteredLog.map((entry, index) => (
-            <tr key={index}>
-              <td>{entry.dataSet ? "Men's" : "Women's"}</td>
-              <td>
-                R: {entry.rightHand?.toFixed(2) || 'N/A'} lbs<br/>
-                L: {entry.leftHand?.toFixed(2) || 'N/A'} lbs
-              </td>
-              <td>
-                {entry.XHandle || 'N/A'} / {entry.githubUsername || 'N/A'}
-              </td>
-              <td>{entry.hoursOfSleep || 'N/A'} hrs</td>
-              <td 
-                className="reporter-cell copyable"
-                onClick={() => copyToClipboard(entry.reporter)}
-                title="Click to copy full address"
-              >
-                {truncateAddress(entry.reporter)}
+          {sortedLog.length > 0 ? (
+            sortedLog.map((entry, index) => (
+              <tr key={index}>
+                <td>{entry.dataSet ? "Men's" : "Women's"}</td>
+                <td>
+                  R: {entry.rightHand?.toFixed(2) || 'N/A'} lbs<br/>
+                  L: {entry.leftHand?.toFixed(2) || 'N/A'} lbs
+                </td>
+                <td>
+                  {entry.XHandle || 'N/A'} / {entry.githubUsername || 'N/A'}
+                </td>
+                <td>{entry.hoursOfSleep || 'N/A'} hrs</td>
+                <td 
+                  className="reporter-cell copyable"
+                  onClick={() => copyToClipboard(entry.reporter)}
+                  title="Click to copy full address"
+                >
+                  {truncateAddress(entry.reporter)}
+                </td>
+              </tr>
+            ))
+          ) : (
+            <tr>
+              <td colSpan="5" style={{ textAlign: 'center', padding: '20px' }}>
+                No entries yet
               </td>
             </tr>
-          ))}
+          )}
         </tbody>
       </table>
     );
@@ -212,18 +297,6 @@ const Leaderboard = ({ oracleQueryId, bridgeTimestamp }) => {
         className="side-image-4" 
         style={{backgroundImage: `url(${process.env.PUBLIC_URL}/images/dumnbell_jellyfish.png)`}}
       ></div>
-      <div 
-        className="side-image-5" 
-        style={{backgroundImage: `url(${process.env.PUBLIC_URL}/images/dumnbell_jellyfish.png)`}}
-      ></div>
-      <div 
-        className="side-image-6" 
-        style={{backgroundImage: `url(${process.env.PUBLIC_URL}/images/dumnbell_jellyfish.png)`}}
-      ></div>
-      <div 
-        className="side-image-7" 
-        style={{backgroundImage: `url(${process.env.PUBLIC_URL}/images/dumnbell_jellyfish.png)`}}
-      ></div>
       <div className="leaderboard">
         <div className="wwf-title">
           <div className="title-text">TELLOR</div>
@@ -240,7 +313,7 @@ const Leaderboard = ({ oracleQueryId, bridgeTimestamp }) => {
             <h2 className="leaderboard-heading">Leaderboard</h2>
           </div>
           {renderDatasetFilter()}
-          {updateLog.length > 0 ? renderUpdateLog(updateLog) : <p>No updates yet</p>}
+          {renderUpdateLog(updateLog)}
         </div>
       </div>
     </>
