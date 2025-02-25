@@ -15,7 +15,7 @@ function App() {
   return (
     <div className="App">
       <Leaderboard 
-        oracleQueryId="0x5d1bd59b60b85541794db87f4b5b2128f583a97800ea6c695378211b29bd1815"
+        oracleQueryId="0x4f7379e37f7d3185be12069ced51b0cea622a6edf255ffb9986a20c6e561bdf8"
         bridgeTimestamp={timestamp}
       />
     </div>
