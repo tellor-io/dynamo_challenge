@@ -1,4 +1,4 @@
-  import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { fetchOracleData } from '../services/oracleService';
 import './Leaderboard.css';
 
@@ -78,6 +78,12 @@ const Leaderboard = ({ oracleQueryId, bridgeTimestamp }) => {
   const truncateAddress = (address) => {
     if (!address) return 'N/A';
     return `${address.slice(0, 8)}...${address.slice(-8)}`;
+  };
+
+  // Update the truncateHash function (replaces truncateAddress)
+  const truncateHash = (hash) => {
+    if (!hash) return 'N/A';
+    return `${hash.slice(0, 8)}...${hash.slice(-8)}`;
   };
 
   const filterDataByDataset = (data) => {
@@ -162,11 +168,11 @@ const Leaderboard = ({ oracleQueryId, bridgeTimestamp }) => {
       let aValue, bValue;
       
       switch(key) {
-        case 'dataset':
+        case 'dataSet':
           aValue = a.dataSet ? "Men's" : "Women's";
           bValue = b.dataSet ? "Men's" : "Women's";
           break;
-        case 'gripStrength':
+        case 'strength':
           aValue = (a.rightHand || 0) + (a.leftHand || 0);
           bValue = (b.rightHand || 0) + (b.leftHand || 0);
           break;
@@ -181,6 +187,10 @@ const Leaderboard = ({ oracleQueryId, bridgeTimestamp }) => {
         case 'reporter':
           aValue = a.reporter || '';
           bValue = b.reporter || '';
+          break;
+        case 'readableTime':
+          aValue = a.readableTime || '';
+          bValue = b.readableTime || '';
           break;
         default:
           return 0;
@@ -210,14 +220,14 @@ const Leaderboard = ({ oracleQueryId, bridgeTimestamp }) => {
         <thead>
           <tr>
             <th 
-              onClick={() => handleSort('dataset')}
-              className={`sortable ${sortConfig.key === 'dataset' ? sortConfig.direction : ''}`}
+              onClick={() => handleSort('dataSet')}
+              className={`sortable ${sortConfig.key === 'dataSet' ? sortConfig.direction : ''}`}
             >
               Dataset
             </th>
             <th 
-              onClick={() => handleSort('gripStrength')}
-              className={`sortable ${sortConfig.key === 'gripStrength' ? sortConfig.direction : ''}`}
+              onClick={() => handleSort('strength')}
+              className={`sortable ${sortConfig.key === 'strength' ? sortConfig.direction : ''}`}
             >
               Grip Strength
             </th>
@@ -232,6 +242,12 @@ const Leaderboard = ({ oracleQueryId, bridgeTimestamp }) => {
               className={`sortable ${sortConfig.key === 'sleep' ? sortConfig.direction : ''}`}
             >
               Sleep
+            </th>
+            <th 
+              onClick={() => handleSort('readableTime')}
+              className={`sortable ${sortConfig.key === 'readableTime' ? sortConfig.direction : ''}`}
+            >
+              Time
             </th>
             <th 
               onClick={() => handleSort('reporter')}
@@ -254,18 +270,15 @@ const Leaderboard = ({ oracleQueryId, bridgeTimestamp }) => {
                   {entry.XHandle || 'N/A'} / {entry.githubUsername || 'N/A'}
                 </td>
                 <td>{entry.hoursOfSleep || 'N/A'} hrs</td>
-                <td 
-                  className="reporter-cell copyable"
-                  onClick={() => copyToClipboard(entry.reporter)}
-                  title="Click to copy full address"
-                >
+                <td>{entry.readableTime}</td>
+                <td className="reporter-cell copyable" onClick={() => copyToClipboard(entry.reporter)}>
                   {truncateAddress(entry.reporter)}
                 </td>
               </tr>
             ))
           ) : (
             <tr>
-              <td colSpan="5" style={{ textAlign: 'center', padding: '20px' }}>
+              <td colSpan="6" style={{ textAlign: 'center', padding: '20px' }}>
                 No entries yet
               </td>
             </tr>
