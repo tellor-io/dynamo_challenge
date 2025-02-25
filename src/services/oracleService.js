@@ -44,6 +44,8 @@ const getTransactionHash = async (height) => {
 
 export const fetchOracleData = async (oracleQueryId, bridgeTimestamp) => {
   try {
+    console.log('Fetching data for queryId:', oracleQueryId);
+
     const currentTimestamp = Date.now();
     const MAX_SAFE_ENTRIES = 500; // Increased safety limit to 500 entries
     
@@ -54,7 +56,7 @@ export const fetchOracleData = async (oracleQueryId, bridgeTimestamp) => {
     
     while (results.length < MAX_SAFE_ENTRIES) {
       const url = `${BASE_URL}/tellor-io/layer/oracle/get_data_before/${oracleQueryId}/${timestamp}`;
-      console.log('Requesting URL:', url);
+      console.log('Full URL:', url);
       
       const response = await fetch(url, {
         method: 'GET',
