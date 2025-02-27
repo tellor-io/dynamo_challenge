@@ -275,11 +275,11 @@ tr:hover {
 }
 
 @keyframes bounce4 {
-  0% { top: 0; left: 50vw; }
-  25% { top: 25vh; left: 100vw; }
-  50% { top: 75vh; left: 50vw; }
-  75% { top: 25vh; left: 0; }
-  100% { top: 0; left: 50vw; }
+  0% { top: 200px; left: 50vw; }
+  25% { top: 50vh; left: 100vw; }
+  50% { top: calc(100vh - 400px); left: 50vw; }
+  75% { top: 50vh; left: 0; }
+  100% { top: 200px; left: 50vw; }
 }
 
 /* Add back the original bounce animation */
