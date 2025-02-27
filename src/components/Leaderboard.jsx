@@ -22,7 +22,7 @@ const Leaderboard = ({ oracleQueryId, bridgeTimestamp }) => {
         const sortedData = data.sort((a, b) => {
           const totalA = (a.rightHand || 0) + (a.leftHand || 0);
           const totalB = (b.rightHand || 0) + (b.leftHand || 0);
-          return totalA - totalB;
+          return totalB - totalA;
         });
         
         // Handle array of entries

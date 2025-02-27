@@ -10,14 +10,20 @@ const hexToNumber = (hex) => {
 
 // Helper function to decode hex string to string
 const hexToString = (hex) => {
-  // Remove trailing zeros
-  hex = hex.replace(/0+$/, '');
-  // Convert hex to string
-  let str = '';
-  for (let i = 0; i < hex.length; i += 2) {
-    str += String.fromCharCode(parseInt(hex.substr(i, 2), 16));
+  if (!hex) return '';  // Return empty string if hex is undefined or null
+  try {
+    // Remove trailing zeros
+    hex = hex.replace(/0+$/, '');
+    // Convert hex to string
+    let str = '';
+    for (let i = 0; i < hex.length; i += 2) {
+      str += String.fromCharCode(parseInt(hex.substr(i, 2), 16));
+    }
+    return str;
+  } catch (error) {
+    console.warn('Error decoding hex string:', error);
+    return '';  // Return empty string on error
   }
-  return str;
 };
 
 export const fetchOracleData = async (oracleQueryId, bridgeTimestamp) => {
@@ -32,9 +38,11 @@ export const fetchOracleData = async (oracleQueryId, bridgeTimestamp) => {
     let timestamp = currentTimestamp;
     let usedFallback = false;
     
+    console.log('Starting data fetch loop with timestamp:', timestamp);
+    
     while (results.length < MAX_SAFE_ENTRIES) {
       const url = `${BASE_URL}/tellor-io/layer/oracle/get_data_before/${oracleQueryId}/${timestamp}`;
-      console.log('Attempting with URL:', url);
+      console.log(`Fetch attempt #${results.length + 1} with timestamp:`, timestamp);
       
       try {
         const response = await fetch(url, {
@@ -49,7 +57,8 @@ export const fetchOracleData = async (oracleQueryId, bridgeTimestamp) => {
           console.error('Response not OK:', {
             status: response.status,
             statusText: response.statusText,
-            body: errorText
+            body: errorText,
+            timestamp: timestamp
           });
           
           // If primary URL failed and we haven't tried fallback yet, switch to fallback
@@ -59,37 +68,47 @@ export const fetchOracleData = async (oracleQueryId, bridgeTimestamp) => {
             usedFallback = true;
             continue; // Retry with fallback URL
           }
+          console.log('Breaking loop due to response error after', results.length, 'entries');
           break;
         }
         
         const data = await response.json();
+        console.log('API Response for timestamp', timestamp, ':', data);
         
         if (data.aggregate?.aggregate_value) {
           try {
             const hexValue = data.aggregate.aggregate_value.replace('0x', '');
-            const chunks = hexValue.match(/.{1,64}/g);
+            const chunks = hexValue.match(/.{1,64}/g) || [];
             
-            console.log('Full API Response:', data);
-            
-            const decodedData = {
-              dataSet: chunks[0].slice(-1) === '1',
-              rightHand: parseInt(chunks[1], 16) / 1e18,
-              leftHand: parseInt(chunks[2], 16) / 1e18,
-              XHandle: hexToString(chunks[7]),
-              githubUsername: hexToString(chunks[9]),
-              hoursOfSleep: parseInt(chunks[5], 16),
-              reporter: 'tellor17gc67q05d5rgsz9caznm0s7s5eazwg2e3fkk8e',
-              readableTime: new Date(parseInt(data.timestamp)).toLocaleString(),
-              timestamp: data.timestamp
-            };
-            
-            console.log('Decoded data with tx hash:', decodedData);
-            
-            results.push(decodedData);
-            timestamp = Math.min(data.timestamp - 1000, timestamp - 1000);
+            // Only proceed if we have enough chunks
+            if (chunks.length >= 10) {
+              const decodedData = {
+                dataSet: chunks[0]?.slice(-1) === '1',
+                rightHand: chunks[1] ? parseInt(chunks[1], 16) / 1e18 : 0,
+                leftHand: chunks[2] ? parseInt(chunks[2], 16) / 1e18 : 0,
+                XHandle: hexToString(chunks[7]),
+                githubUsername: hexToString(chunks[9]),
+                hoursOfSleep: chunks[5] ? parseInt(chunks[5], 16) : 0,
+                reporter: 'tellor17gc67q05d5rgsz9caznm0s7s5eazwg2e3fkk8e',
+                readableTime: new Date(parseInt(data.timestamp)).toLocaleString(),
+                timestamp: data.timestamp
+              };
+              
+              console.log('Successfully decoded data:', decodedData);
+              
+              results.push(decodedData);
+              const oldTimestamp = timestamp;
+              timestamp = Math.min(data.timestamp - 1000, timestamp - 1000);
+              console.log('Updated timestamp from', oldTimestamp, 'to', timestamp);
+            } else {
+              console.warn('Skipping entry due to insufficient data chunks:', chunks.length);
+              timestamp = Math.min(data.timestamp - 1000, timestamp - 1000);
+            }
           } catch (error) {
             console.error('Error decoding data:', error);
-            break;
+            console.log('Continuing to next entry after decode error');
+            timestamp = Math.min(data.timestamp - 1000, timestamp - 1000);
+            continue; // Continue instead of breaking
           }
         } else {
           console.log('No more data available after fetching', results.length, 'entries');
@@ -106,6 +125,7 @@ export const fetchOracleData = async (oracleQueryId, bridgeTimestamp) => {
           usedFallback = true;
           continue; // Retry with fallback URL
         }
+        console.log('Breaking loop due to fetch error after', results.length, 'entries');
         break;
       }
     }
@@ -123,6 +143,7 @@ export const fetchOracleData = async (oracleQueryId, bridgeTimestamp) => {
       console.warn(`Reached safety limit of ${MAX_SAFE_ENTRIES} entries. Some older entries might not be included.`);
     }
 
+    console.log('Final results count:', results.length);
     return results;
   } catch (error) {
     console.error('Fatal error:', error);
