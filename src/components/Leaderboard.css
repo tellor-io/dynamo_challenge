@@ -185,6 +185,21 @@ tr:hover {
   background: rgba(6, 137, 135, 0.1);
 }
 
+/* Clickable row styles */
+tr.clickable-row {
+  transition: all 0.2s ease;
+}
+
+tr.clickable-row:hover {
+  background: rgba(6, 137, 135, 0.15);
+  transform: scale(1.01);
+  box-shadow: 0 2px 8px rgba(6, 137, 135, 0.3);
+}
+
+tr.clickable-row:active {
+  transform: scale(0.99);
+}
+
 .update-log {
   background: rgba(255, 255, 255, 0.9);
   border-radius: 8px;
