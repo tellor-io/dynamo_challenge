@@ -260,7 +260,17 @@ const Leaderboard = ({ oracleQueryId, bridgeTimestamp }) => {
         <tbody>
           {sortedLog.length > 0 ? (
             sortedLog.map((entry, index) => (
-              <tr key={index}>
+              <tr 
+                key={index}
+                className={entry.blockNumber ? 'clickable-row' : ''}
+                onClick={() => {
+                  if (entry.blockNumber) {
+                    window.open(`https://explorer.tellor.io/blocks/${entry.blockNumber}`, '_blank', 'noopener,noreferrer');
+                  }
+                }}
+                style={{ cursor: entry.blockNumber ? 'pointer' : 'default' }}
+                title={entry.blockNumber ? `Click to view block #${entry.blockNumber}` : ''}
+              >
                 <td>{entry.dataSet ? "Men's" : "Women's"}</td>
                 <td>
                   R: {entry.rightHand?.toFixed(2) || 'N/A'} lbs<br/>
@@ -271,7 +281,13 @@ const Leaderboard = ({ oracleQueryId, bridgeTimestamp }) => {
                 </td>
                 <td>{entry.hoursOfSleep || 'N/A'} hrs</td>
                 <td>{entry.readableTime}</td>
-                <td className="reporter-cell copyable" onClick={() => copyToClipboard(entry.reporter)}>
+                <td 
+                  className="reporter-cell copyable" 
+                  onClick={(e) => {
+                    e.stopPropagation(); // Prevent row click when copying address
+                    copyToClipboard(entry.reporter);
+                  }}
+                >
                   {truncateAddress(entry.reporter)}
                 </td>
               </tr>
