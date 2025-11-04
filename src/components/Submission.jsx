@@ -4,6 +4,27 @@ import './Submission.css';
 
 const QUERY_DATA = '0x00000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000080000000000000000000000000000000000000000000000000000000000000000d45746844656e7665723230323500000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000006000000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000019677269705f737472656e6774685f64796e616d6f6d6574657200000000000000';
 
+// SHA-256 hash of the password
+const PASSWORD_HASH = '18ec4a1211fae1944f9484f2f8e76acd2ed4d4c9e54e8b72a68bf608faa552ae'; // hash of 'wags'
+
+// Simple SHA-256 implementation
+const sha256 = async (message) => {
+  try {
+    // Check if crypto.subtle is available
+    if (!crypto || !crypto.subtle) {
+      console.error('crypto.subtle not available');
+      throw new Error('Secure crypto not available');
+    }
+    const msgBuffer = new TextEncoder().encode(message);
+    const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+    const hashArray = Array.from(new Uint8Array(hashBuffer));
+    return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+  } catch (error) {
+    console.error('Error in sha256:', error);
+    throw error;
+  }
+};
+
 // Helper function to convert string to hex
 const stringToHex = (str) => {
   let hex = '';
@@ -84,6 +105,39 @@ const Submission = ({ onBack }) => {
   const [walletAddress, setWalletAddress] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submissionResult, setSubmissionResult] = useState(null);
+  
+  // Password gate state
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [showPasswordModal, setShowPasswordModal] = useState(true);
+  const [passwordInput, setPasswordInput] = useState('');
+  const [passwordError, setPasswordError] = useState('');
+
+  useEffect(() => {
+    // Check if sessionStorage is available
+    let storageAvailable = false;
+    try {
+      storageAvailable = typeof sessionStorage !== 'undefined' && sessionStorage !== null;
+      if (storageAvailable) {
+        const authenticated = sessionStorage.getItem('dynamo_authenticated') === 'true';
+        if (authenticated) {
+          setIsAuthenticated(true);
+          setShowPasswordModal(false);
+          return;
+        }
+      }
+    } catch (e) {
+      console.log('sessionStorage not available:', e);
+    }
+    
+    // Bypass password on non-HTTPS (local dev) or if storage unavailable
+    // crypto.subtle requires HTTPS or localhost
+    const isSecureContext = window.isSecureContext || window.location.protocol === 'https:';
+    if (!isSecureContext || !storageAvailable) {
+      console.log('Non-HTTPS or storage unavailable, bypassing password check');
+      setIsAuthenticated(true);
+      setShowPasswordModal(false);
+    }
+  }, []);
 
   useEffect(() => {
     // Listen for account changes
@@ -230,8 +284,60 @@ const Submission = ({ onBack }) => {
     }
   };
 
+  const handlePasswordSubmit = async (e) => {
+    e.preventDefault();
+    setPasswordError('');
+    
+    try {
+      const hash = await sha256(passwordInput);
+      
+      if (hash === PASSWORD_HASH) {
+        setIsAuthenticated(true);
+        setShowPasswordModal(false);
+        // Try to save to sessionStorage if available
+        try {
+          if (typeof sessionStorage !== 'undefined' && sessionStorage !== null) {
+            sessionStorage.setItem('dynamo_authenticated', 'true');
+          }
+        } catch (e) {
+          console.log('Could not save to sessionStorage:', e);
+        }
+      } else {
+        setPasswordError('Incorrect password. Please try again.');
+        setPasswordInput('');
+      }
+    } catch (error) {
+      console.error('Password verification error:', error);
+      setPasswordError('Error verifying password. Try refreshing the page or use HTTPS.');
+    }
+  };
+
   return (
     <div className="submission-container">
+      {/* Password Modal */}
+      {showPasswordModal && !isAuthenticated && (
+        <div className="password-modal-overlay">
+          <div className="password-modal">
+            <h2>Access Required</h2>
+            <p>Please enter the password to access the submission form.</p>
+            <form onSubmit={handlePasswordSubmit}>
+              <input
+                type="password"
+                value={passwordInput}
+                onChange={(e) => setPasswordInput(e.target.value)}
+                placeholder="Enter password"
+                className="password-input"
+                autoFocus
+              />
+              {passwordError && <p className="password-error">{passwordError}</p>}
+              <button type="submit" className="password-submit-button">
+                Submit
+              </button>
+            </form>
+          </div>
+        </div>
+      )}
+
       <div className="submission-header">
         <button className="back-button" onClick={onBack}>← Back to Leaderboard</button>
         <h1>Submit Your Dynamo Challenge Data</h1>
@@ -440,13 +546,13 @@ const Submission = ({ onBack }) => {
                   <div className="encoded-value-container">
                     <textarea 
                       readOnly 
-                      value={`layerd tx oracle submit-no-stake-report '${QUERY_DATA}' '${encodedValue}' --from ${walletAddress || 'YOUR_KEY_NAME'} --chain-id layer --fees 10000loya --gas 300000 --node https://node-palmito.tellorlayer.com:26657`}
+                      value={`layerd tx oracle submit-no-stake-report '${QUERY_DATA}' '${encodedValue}' --from ${walletAddress || 'YOUR_KEY_NAME'} --chain-id layertest-4 --fees 10000loya --gas 300000 --node https://node-palmito.tellorlayer.com:26657`}
                       className="encoded-value cli-command"
                       rows="3"
                     />
                     <button 
                       onClick={() => {
-                        const cmd = `layerd tx oracle submit-no-stake-report '${QUERY_DATA}' '${encodedValue}' --from ${walletAddress || 'YOUR_KEY_NAME'} --chain-id layer --fees 10000loya --gas 300000 --node https://node-palmito.tellorlayer.com:26657`;
+                        const cmd = `layerd tx oracle submit-no-stake-report '${QUERY_DATA}' '${encodedValue}' --from ${walletAddress || 'YOUR_KEY_NAME'} --chain-id layertest-4 --fees 10000loya --gas 300000 --node https://node-palmito.tellorlayer.com:26657`;
                         copyToClipboard(cmd);
                         setCopied(true);
                         setTimeout(() => setCopied(false), 2000);

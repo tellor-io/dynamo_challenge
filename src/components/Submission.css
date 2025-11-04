@@ -636,3 +636,112 @@
   }
 }
 
+/* Password Modal Styles */
+.password-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.75);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  backdrop-filter: blur(5px);
+}
+
+.password-modal {
+  background: linear-gradient(135deg, #068987 0%, #07b3b0 100%);
+  padding: 2.5rem;
+  border-radius: 15px;
+  max-width: 400px;
+  width: 90%;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+  border: 3px solid #0ad3d0;
+}
+
+.password-modal h2 {
+  margin: 0 0 1rem 0;
+  color: #fff;
+  font-size: 1.8rem;
+  text-align: center;
+  text-shadow: 2px 2px 4px rgba(3, 68, 67, 0.5);
+}
+
+.password-modal p {
+  color: #fff;
+  text-align: center;
+  margin-bottom: 1.5rem;
+  font-size: 0.95rem;
+  opacity: 0.95;
+}
+
+.password-modal form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.password-input {
+  padding: 0.85rem;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 8px;
+  font-size: 1rem;
+  background: rgba(255, 255, 255, 0.95);
+  color: #333;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.password-input:focus {
+  outline: none;
+  border-color: #0ad3d0;
+  box-shadow: 0 0 15px rgba(10, 211, 208, 0.4);
+}
+
+.password-error {
+  color: #ffcccc;
+  font-size: 0.9rem;
+  margin: -0.5rem 0 0 0;
+  text-align: center;
+  font-weight: 600;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+.password-submit-button {
+  padding: 0.85rem 1.5rem;
+  background: #fff;
+  color: #068987;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.password-submit-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 20px rgba(255, 255, 255, 0.3);
+}
+
+.password-submit-button:active {
+  transform: translateY(0);
+}
+
+@media screen and (max-width: 480px) {
+  .password-modal {
+    padding: 2rem;
+  }
+
+  .password-modal h2 {
+    font-size: 1.5rem;
+  }
+
+  .password-modal p {
+    font-size: 0.9rem;
+  }
+}
+

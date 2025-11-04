@@ -18,24 +18,31 @@ function App() {
     <div className="App">
       {currentPage === 'leaderboard' ? (
         <>
-          <div style={{ position: 'absolute', top: '20px', right: '20px', zIndex: 1000 }}>
+          <div style={{ position: 'fixed', top: '30px', right: '30px', zIndex: 1000 }}>
             <button 
               onClick={() => setCurrentPage('submission')}
               style={{
-                padding: '0.75rem 1.5rem',
-                background: 'rgba(255, 255, 255, 0.9)',
+                background: 'none',
                 border: 'none',
-                borderRadius: '8px',
                 cursor: 'pointer',
-                fontWeight: '600',
-                fontSize: '1rem',
-                boxShadow: '0 2px 10px rgba(0,0,0,0.2)',
-                transition: 'transform 0.2s ease'
+                fontWeight: '400',
+                fontSize: '2.5rem',
+                fontFamily: 'Courier New, monospace',
+                transition: 'opacity 0.2s ease',
+                color: '#fff',
+                textShadow: '1px 1px 0px rgba(0,0,0,0.8)',
+                padding: '0',
+                opacity: '0.85'
               }}
-              onMouseOver={(e) => e.target.style.transform = 'translateY(-2px)'}
-              onMouseOut={(e) => e.target.style.transform = 'translateY(0)'}
+              onMouseOver={(e) => {
+                e.target.style.opacity = '1';
+              }}
+              onMouseOut={(e) => {
+                e.target.style.opacity = '0.85';
+              }}
+              title="Submit Your Data"
             >
-              Submit Your Data
+              π
             </button>
           </div>
           <Leaderboard 
