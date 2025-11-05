@@ -340,7 +340,7 @@ const Submission = ({ onBack }) => {
 
       <div className="submission-header">
         <button className="back-button" onClick={onBack}>← Back to Leaderboard</button>
-        <h1>Submit Your Dynamo Challenge Data</h1>
+        <h1>Submit Your Grip-Strength Challenge Data</h1>
         
         <div className="wallet-section">
           {walletAddress ? (
