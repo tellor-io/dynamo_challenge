@@ -312,26 +312,27 @@ const Leaderboard = ({ oracleQueryId, bridgeTimestamp }) => {
     <>
       <div 
         className="side-image-left" 
-        style={{backgroundImage: `url(${process.env.PUBLIC_URL}/images/dumnbell_jellyfish.png)`}}
+        style={{backgroundImage: `url(${process.env.PUBLIC_URL}/images/argentina_flag_pixel.svg)`}}
       ></div>
       <div 
         className="side-image-2" 
-        style={{backgroundImage: `url(${process.env.PUBLIC_URL}/images/dumnbell_jellyfish.png)`}}
+        style={{backgroundImage: `url(${process.env.PUBLIC_URL}/images/argentina_flag_pixel.svg)`}}
       ></div>
       <div 
         className="side-image-3" 
-        style={{backgroundImage: `url(${process.env.PUBLIC_URL}/images/dumnbell_jellyfish.png)`}}
+        style={{backgroundImage: `url(${process.env.PUBLIC_URL}/images/argentina_flag_pixel.svg)`}}
       ></div>
       <div 
         className="side-image-4" 
-        style={{backgroundImage: `url(${process.env.PUBLIC_URL}/images/dumnbell_jellyfish.png)`}}
+        style={{backgroundImage: `url(${process.env.PUBLIC_URL}/images/argentina_flag_pixel.svg)`}}
       ></div>
       <div className="leaderboard">
         <div className="wwf-title">
           <div className="title-text">TELLOR</div>
-          <div className="title-text accent">DYNAMO</div>
+          <div className="title-text accent">GRIP-STRENGTH</div>
           <div className="title-text">CHALLENGE</div>
         </div>
+        <div className="subtitle-text">🇦🇷 Buenos Aires Edition 🇦🇷</div>
         <div className="update-log">
           <div className="leaderboard-header">
             <img 

@@ -1,4 +1,4 @@
-# Getting Started with Tellor Dynamo Challenge
+# Getting Started with Tellor Grip-Strength Challenge
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 

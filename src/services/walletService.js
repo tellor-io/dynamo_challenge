@@ -284,7 +284,7 @@ export const submitNoStakeReport = async (queryData, value) => {
       address,
       [msg],
       fee,
-      'Dynamo Challenge Submission'
+      'Grip-Strength Challenge Submission'
     );
     
     console.log('Transaction result:', result);

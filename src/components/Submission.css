@@ -2,10 +2,9 @@
   min-height: 100vh;
   padding: 2rem;
   background: linear-gradient(180deg, 
-    #034443 0%,
-    #068987 50%,
-    #07b3b0 75%,
-    #0ad3d0 100%
+    #74ACDF 0%,    /* Argentina light blue at top */
+    #FFFFFF 50%,   /* White in middle */
+    #74ACDF 100%   /* Argentina light blue at bottom */
   );
   color: #fff;
 }
@@ -50,7 +49,7 @@
 }
 
 .connect-wallet-button {
-  background: linear-gradient(135deg, #4caf50 0%, #45a049 100%);
+  background: linear-gradient(135deg, #ccb74d 0%, #b3a75b 100%);
   color: #fff;
   border: none;
   padding: 0.75rem 1.5rem;
