@@ -15,10 +15,18 @@ function App() {
   }
 
   return (
-    <div className="App">
+    <div className="App" style={{ position: 'relative' }}>
       {currentPage === 'leaderboard' ? (
         <>
-          <div style={{ position: 'fixed', top: '30px', right: '30px', zIndex: 1000 }}>
+          <div 
+            className="pi-button-container"
+            style={{ 
+              position: 'absolute', 
+              top: '30px', 
+              right: '30px', 
+              zIndex: 1000
+            }}
+          >
             <button 
               onClick={() => setCurrentPage('submission')}
               style={{

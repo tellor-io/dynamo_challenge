@@ -29,7 +29,8 @@ body {
   box-shadow: 
     0 0 30px rgba(255, 215, 0, 0.4),
     inset 0 0 50px rgba(6, 137, 135, 0.1);
-  overflow: visible;
+  overflow-x: hidden;
+  overflow-y: visible;
   min-height: fit-content;
   height: auto;
 }
@@ -78,6 +79,14 @@ body {
   position: relative;
   z-index: 2;
   white-space: nowrap;
+}
+
+/* Allow title to wrap on smaller screens */
+@media screen and (max-width: 900px) {
+  .title-text {
+    white-space: normal;
+    word-break: break-word;
+  }
 }
 
 .title-text.accent {
@@ -166,10 +175,10 @@ table {
   margin: 20px auto;
   border-collapse: separate;
   border-spacing: 0;
-  table-layout: fixed;
+  table-layout: auto;
   background: rgba(255, 255, 255, 0.9);
   border-radius: 8px;
-  overflow: hidden;
+  overflow-x: auto;
   box-shadow: 0 4px 15px rgba(6, 137, 135, 0.2);
   border: 2px solid #068987;
 }
@@ -228,21 +237,26 @@ tr.clickable-row:active {
 }
 
 /* Customize scrollbar for webkit browsers */
-.update-log::-webkit-scrollbar {
+.update-log::-webkit-scrollbar,
+.table-wrapper::-webkit-scrollbar {
   width: 8px;
+  height: 8px;
 }
 
-.update-log::-webkit-scrollbar-track {
+.update-log::-webkit-scrollbar-track,
+.table-wrapper::-webkit-scrollbar-track {
   background: rgba(6, 137, 135, 0.1);
   border-radius: 4px;
 }
 
-.update-log::-webkit-scrollbar-thumb {
+.update-log::-webkit-scrollbar-thumb,
+.table-wrapper::-webkit-scrollbar-thumb {
   background: #068987;
   border-radius: 4px;
 }
 
-.update-log::-webkit-scrollbar-thumb:hover {
+.update-log::-webkit-scrollbar-thumb:hover,
+.table-wrapper::-webkit-scrollbar-thumb:hover {
   background: #07b3b0;
 }
 
@@ -494,55 +508,223 @@ tr.clickable-row:active {
   word-break: break-all;
 }
 
-/* Add after the existing table styles */
+/* Add after the existing table styles - use min-width for flexibility */
 .update-log-table th:nth-child(1) { /* Dataset column */
-  width: 20%;
+  min-width: 80px;
+  width: auto;
 }
 .update-log-table th:nth-child(2) { /* Grip Strength column */
-  width: 25%;
+  min-width: 100px;
+  width: auto;
 }
 .update-log-table th:nth-child(3) { /* Social column */
-  width: 25%;
+  min-width: 120px;
+  width: auto;
 }
 .update-log-table th:nth-child(4) { /* Sleep column */
-  width: 15%;
+  min-width: 70px;
+  width: auto;
 }
 .update-log-table th:nth-child(5) { /* Time column */
-  width: 18%;
+  min-width: 80px;
+  width: auto;
 }
 .update-log-table th:nth-child(6) { /* Reporter column */
-  width: 25%;
+  min-width: 100px;
+  width: auto;
 }
 
-/* Small mobile devices */
-@media screen and (max-width: 375px) {
-  .update-log-table {
-    font-size: 12px; /* Even smaller font for very small devices */
+/* Table wrapper for scrolling */
+.table-wrapper {
+  width: 100%;
+  overflow-x: visible;
+}
+
+/* Small mobile devices - use flexible breakpoint */
+@media screen and (max-width: 480px) {
+  .update-log {
+    overflow-x: visible; /* Don't scroll the entire container */
   }
+  
+  .table-wrapper {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+  }
+  
+  .update-log-table {
+    font-size: 0.75rem;
+    min-width: 600px; /* Ensure table doesn't get too cramped */
+    margin: 0;
+  }
+  
+  .update-log-table th,
+  .update-log-table td {
+    padding: 8px 6px;
+    font-size: clamp(0.65rem, 2.5vw, 0.75rem);
+  }
+  
+  .dataset-filter {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background: rgba(255, 255, 255, 0.95);
+    margin: 20px 0;
+    padding: 15px 0;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
   .wwf-title {
     text-align: center;
-    width: 50px;       /* Reduced from 200px */
-    height: 150px;      /* Reduced from 200px */
+    width: auto;
+    max-width: 250px;
+    height: auto;
+    min-height: 150px;
     margin: -20px auto 40px;
     position: relative;
-    background-size: 100%;
+    background-size: contain;
     background-position: center;
     background-repeat: no-repeat;
-    padding: 40px 0px 0 40px; /* Adjust padding to accommodate the image */
+    padding: 40px 20px 0;
     z-index: 1;
   }
 
-  .update-log-table th,
-  .update-log-table td {
-    padding: 6px;
-  }
-
   .title-text {
-    font-size: 2.5em;  /* Smaller base font size for mobile */
+    font-size: clamp(1.8em, 5vw, 2.5em);
   }
   
   .title-text.accent {
-    font-size: 3em;    /* Smaller accent font size for mobile */
+    font-size: clamp(2.2em, 6vw, 3em);
+  }
+}
+
+/* Landscape mode on mobile devices */
+@media screen and (max-width: 900px) and (orientation: landscape) {
+  .leaderboard {
+    width: 95%;
+    max-width: 100%;
+    padding: 20px 15px;
+    margin: 0 auto;
+    overflow-x: hidden;
+  }
+  
+  .update-log {
+    overflow-x: hidden;
+    padding: 15px;
+    width: 100%;
+    box-sizing: border-box;
+  }
+  
+  .update-log-table {
+    min-width: auto;
+    width: 100%;
+    max-width: 100%;
+    font-size: 0.85rem;
+    table-layout: auto;
+    box-sizing: border-box;
+  }
+  
+  .update-log-table th,
+  .update-log-table td {
+    padding: 10px 8px;
+    font-size: clamp(0.7rem, 1.5vw, 0.85rem);
+    box-sizing: border-box;
+  }
+  
+  .wwf-title {
+    max-width: 100%;
+    width: 100%;
+    min-height: 100px;
+    margin: -30px auto 20px;
+    padding: 30px 10px 0;
+    box-sizing: border-box;
+  }
+
+  .title-text {
+    font-size: clamp(2em, 4vw, 3em);
+    white-space: normal;
+    line-height: 1.1;
+    word-break: break-word;
+  }
+  
+  .title-text.accent {
+    font-size: clamp(2.5em, 5vw, 3.5em);
+    white-space: normal;
+    word-break: break-word;
+  }
+  
+  .subtitle-text {
+    font-size: clamp(1.2em, 2.5vw, 1.8em);
+    margin-bottom: 15px;
+  }
+  
+  /* Adjust column widths for landscape */
+  .update-log-table th:nth-child(1) {
+    min-width: 70px;
+  }
+  .update-log-table th:nth-child(2) {
+    min-width: 90px;
+  }
+  .update-log-table th:nth-child(3) {
+    min-width: 100px;
+  }
+  .update-log-table th:nth-child(4) {
+    min-width: 60px;
+  }
+  .update-log-table th:nth-child(5) {
+    min-width: 70px;
+  }
+  .update-log-table th:nth-child(6) {
+    min-width: 90px;
+  }
+}
+
+/* Smaller landscape devices (phones in landscape) */
+@media screen and (max-width: 667px) and (orientation: landscape) {
+  .leaderboard {
+    width: 98%;
+    padding: 15px 10px;
+    overflow-x: hidden;
+  }
+  
+  .update-log {
+    padding: 12px;
+    overflow-x: hidden;
+    width: 100%;
+    box-sizing: border-box;
+  }
+  
+  .update-log-table {
+    font-size: 0.75rem;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+  
+  .update-log-table th,
+  .update-log-table td {
+    padding: 8px 6px;
+    font-size: clamp(0.65rem, 1.8vw, 0.75rem);
+    box-sizing: border-box;
+  }
+  
+  .title-text {
+    font-size: clamp(1.5em, 3.5vw, 2.5em);
+    white-space: normal;
+    word-break: break-word;
+  }
+  
+  .title-text.accent {
+    font-size: clamp(2em, 4.5vw, 3em);
+    white-space: normal;
+    word-break: break-word;
+  }
+  
+  .subtitle-text {
+    font-size: clamp(1em, 2vw, 1.5em);
+    margin-bottom: 10px;
   }
 }
 
@@ -568,22 +750,38 @@ tr.clickable-row:active {
   margin: 20px auto 0;  /* Add space above logo */
 }
 
-/* Small mobile devices */
-@media screen and (max-width: 375px) {
+/* Small mobile devices - flexible breakpoint */
+@media screen and (max-width: 480px) {
   
   .leaderboard .wwf-title {
-    width: 250px !important;
-    height: 200px !important;
+    width: auto !important;
+    max-width: 250px !important;
+    height: auto !important;
+    min-height: 150px !important;
     margin: -50px auto -80px;
     padding-top: 70px;
-    padding-left: 0;  /* Remove any left padding */
-    text-align: center;  /* Ensure text is centered */
+    padding-left: 0;
+    text-align: center;
   }
   .leaderboard {
     width: 95%;
     padding: 15px;
-    margin: 0;
-    margin-left: -10px;  /* Slightly smaller shift for smaller screens */
+    margin: 0 auto;
+  }
+}
+
+/* Override for landscape mode on small devices */
+@media screen and (max-width: 480px) and (orientation: landscape) {
+  .leaderboard {
+    width: 98%;
+    padding: 12px 10px;
+  }
+  
+  .leaderboard .wwf-title {
+    max-width: 100% !important;
+    min-height: 80px !important;
+    margin: -30px auto 15px !important;
+    padding-top: 30px !important;
   }
 }
 
@@ -620,15 +818,15 @@ td.reporter-cell {
   }
 }
 
-@media screen and (max-width: 375px) {
+@media screen and (max-width: 480px) {
   th {
-    padding: 8px;
-    font-size: 0.8em;
+    padding: 8px 6px;
+    font-size: clamp(0.7em, 2.5vw, 0.8em);
     letter-spacing: 0;
   }
   
   table {
-    font-size: 0.8em;  /* Reduce overall table font size */
+    font-size: clamp(0.7em, 2.5vw, 0.8em);
   }
 }
 
@@ -832,15 +1030,17 @@ td.reporter-cell {
   animation: activePulse 2s infinite;
 }
 
-@media screen and (max-width: 375px) {
+@media screen and (max-width: 480px) {
   .dataset-filter {
     flex-direction: column;
     align-items: center;
+    gap: 8px;
   }
   
   .filter-btn {
     width: 100%;
     max-width: 200px;
+    font-size: clamp(0.85rem, 3vw, 1rem);
   }
 }
 
@@ -921,12 +1121,21 @@ td.reporter-cell {
   vertical-align: middle;
 }
 
-/* Keep single-line headers from wrapping */
+/* Allow headers to wrap on smaller screens */
 .update-log-table th:nth-child(1), /* Dataset */
 .update-log-table th:nth-child(4), /* Sleep */
 .update-log-table th:nth-child(5), /* Time */
 .update-log-table th:nth-child(6) { /* Reporter */
-  white-space: nowrap;
+  white-space: normal;
+}
+
+@media (min-width: 600px) {
+  .update-log-table th:nth-child(1),
+  .update-log-table th:nth-child(4),
+  .update-log-table th:nth-child(5),
+  .update-log-table th:nth-child(6) {
+    white-space: nowrap;
+  }
 }
 
 /* Allow specific headers to wrap */
@@ -960,10 +1169,34 @@ td.reporter-cell {
   }
 }
 
-@media (max-width: 400px) {
+@media (max-width: 480px) {
   .update-log-table th {
-    font-size: 0.6rem;
-    padding: 3px 3px;
+    font-size: clamp(0.6rem, 2.5vw, 0.7rem);
+    padding: 4px 4px;
+  }
+  
+  .update-log-table td {
+    font-size: clamp(0.65rem, 2.5vw, 0.75rem);
+    padding: 6px 4px;
+  }
+}
+
+/* Pi button positioning for mobile */
+@media screen and (max-width: 768px) {
+  .pi-button-container {
+    right: 10px !important;
+    top: 20px !important;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .pi-button-container {
+    right: 5px !important;
+    top: 15px !important;
+  }
+  
+  .pi-button-container button {
+    font-size: 2rem !important;
   }
 }
 

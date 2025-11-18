@@ -216,7 +216,8 @@ const Leaderboard = ({ oracleQueryId, bridgeTimestamp }) => {
     const sortedLog = sortConfig.key ? sortData(filteredLog, sortConfig.key) : filteredLog;
     
     return (
-      <table className="update-log-table">
+      <div className="table-wrapper">
+        <table className="update-log-table">
         <thead>
           <tr>
             <th 
@@ -301,6 +302,7 @@ const Leaderboard = ({ oracleQueryId, bridgeTimestamp }) => {
           )}
         </tbody>
       </table>
+      </div>
     );
   };
 
